@@ -5,10 +5,9 @@ import { useFetch } from "../hooks/useFetch";
 function Home() {
   let [category, setCategory] = useState([]);
   // let token = `Xg5XCjz4AB1tGDnDJwYcfFBPnSSH6njcs7-AcSFu0sw`;
+  const token = import.meta.env.VITE_UNSPLASH_TOKEN;
   let { data, isPending, error } = useFetch(
-    `https://api.unsplash.com/search/photos?client_id=${
-      import.meta.env.VITE_ACESS_KEY
-    }&query=car`
+    `https://api.unsplash.com/search/photos?client_id=${token}&query=car`
   );
   console.log(data);
   
@@ -16,7 +15,7 @@ function Home() {
     axios
       .get("https://api.unsplash.com/topics?per_page=30", {
         headers: {
-          Authorization: `Client-ID ${import.meta.env.VITE_ACESS_KEY}`,
+          Authorization: `Client-ID ${token}`,
         },
       })
       .then((response) => {
