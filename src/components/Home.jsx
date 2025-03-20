@@ -5,7 +5,7 @@ import { useFetch } from "../hooks/useFetch";
 function Home() {
   let [category, setCategory] = useState([]);
   // let token = `Xg5XCjz4AB1tGDnDJwYcfFBPnSSH6njcs7-AcSFu0sw`;
-  const token = import.meta.env.VITE_UNSPLASH_TOKEN;
+  const token = import.meta.env.VITE_ACESS_KEY;
   let { data, isPending, error } = useFetch(
     `https://api.unsplash.com/search/photos?client_id=${token}&query=car`
   );
