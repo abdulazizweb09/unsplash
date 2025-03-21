@@ -4,11 +4,13 @@ import camera from "../img/search.svg";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import { useFetch } from "../hooks/useFetch";
 function Home() {
+  let [search,setSearch] = useState("");
   let [category, setCategory] = useState([]);
+  let [page, setPage] = useState(10);
   let token = `Xg5XCjz4AB1tGDnDJwYcfFBPnSSH6njcs7-AcSFu0sw`;
   // const token = import.meta.env.VITE_ACESS_KEY;
-  let { data, isPending, error } = useFetch(
-    `https://api.unsplash.com/search/photos?client_id=${token}&query=random`
+  let { data, isPending, error ,links} = useFetch(
+    `https://api.unsplash.com/search/photos?client_id=${token}&query=${search.length==0?'all':search}&page=${page}`
   );
   console.log(data);
   
@@ -44,6 +46,8 @@ function Home() {
               />
               <input
                 type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search photos and illustrations"
                 className="w-full pl-12 pr-12 py-2 focus:outline focus:bg-white rounded-full"
               />
@@ -81,7 +85,7 @@ function Home() {
       </div>
       <ResponsiveMasonry
         className="mx-auto container w-6xl"
-        columnsCountBreakPoints={{ 350: 1, 750: 2, 900: 3 }}
+        columnsCountBreakPoints={{ 900: 3, 750: 2, 350: 1, 600: 1 }}
       >
         <Masonry gutter="30px">
           {Array.isArray(data) &&
@@ -91,8 +95,8 @@ function Home() {
                 <img className="w-full" src={item.urls.full} />
                 <div className="group-hover:block text-white top-0 w-full h-full p-4 hidden absolute bg-black/15">
                   <div>
-                    <i class="fa-solid fa-heart text-xl absolute right-18 w-8 h-7 pt-[5px] pl-[5px] rounded-[4px] bg-white/70 text-black/80"></i>
-                    <i class="fa-solid fa-plus text-xl absolute right-7 w-8 h-7 pt-[5px] pl-[6px] rounded-[4px] bg-white/70 text-black/80"></i>
+                    <i className="fa-solid fa-heart text-xl absolute right-18 w-8 h-7 pt-[5px] pl-[5px] rounded-[4px] bg-white/70 text-black/80"></i>
+                    <i className="fa-solid fa-plus text-xl absolute right-7 w-8 h-7 pt-[5px] pl-[6px] rounded-[4px] bg-white/70 text-black/80"></i>
                   </div>
                   <div>
                     <div className="bottom-4 gap-3 items-center absolute flex">
@@ -107,8 +111,9 @@ function Home() {
                       </div>
                     </div>
                   </div>
-                  <a href={item.urls.full} download>
-                    <i class="fa-solid fa-download bottom-6 text-xl absolute right-7 w-8 h-7 pt-[5px] pl-[6px] rounded-[4px] bg-white/70 text-black/80"></i>
+                  <a href={links + "&force=true"} download>
+                    {console.log(links)}
+                    <i className="fa-solid fa-download bottom-6 text-xl absolute right-7 w-8 h-7 pt-[5px] pl-[6px] rounded-[4px] bg-white/70 text-black/80"></i>
                   </a>
                 </div>
               </div>

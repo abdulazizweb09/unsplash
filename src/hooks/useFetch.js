@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 
 export function useFetch(url) {
-  const [data, setData] = useState(null);
-  const [isPending, setIsPending] = useState(false);
-  const [error, setError] = useState(null);
+  let [data, setData] = useState(null);
+  let [isPending, setIsPending] = useState(false);
+  let [error, setError] = useState(null);
+  let [links, setLinks] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -16,6 +17,7 @@ export function useFetch(url) {
         const data = await req.json();
         setData(data.results);
         setIsPending(false);
+        setLinks(data.results.links?.download);
       } catch (err) {
         setError(err.message);
         console.log(err.message);
@@ -25,5 +27,6 @@ export function useFetch(url) {
     fetchData();
   }, [url]);
 
-  return { data, isPending, error };
+
+  return { data, isPending, error,links };
 }
