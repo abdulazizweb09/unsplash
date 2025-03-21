@@ -1,13 +1,14 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import camera from "../img/search.svg";
+import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import { useFetch } from "../hooks/useFetch";
 function Home() {
   let [category, setCategory] = useState([]);
   let token = `Xg5XCjz4AB1tGDnDJwYcfFBPnSSH6njcs7-AcSFu0sw`;
   // const token = import.meta.env.VITE_ACESS_KEY;
   let { data, isPending, error } = useFetch(
-    `https://api.unsplash.com/search/photos?client_id=${token}&query=car`
+    `https://api.unsplash.com/search/photos?client_id=${token}&query=random`
   );
   console.log(data);
   
@@ -30,7 +31,7 @@ function Home() {
 
   return (
     <div>
-      <nav className="mx-auto max-w-8xl bg-white px-6 py-3">
+      <nav className="mx-auto max-w-7xl bg-white py-3">
         <div className="flex items-center justify-between mx-auto gap-4">
           <div className="flex items-center space-x-4 flex-grow ">
             <i className="fa-brands fa-unsplash text-4xl"></i>
@@ -63,7 +64,7 @@ function Home() {
         </div>
 
         <div className="flex gap-4 overflow-x-auto mt-3 pb-2 whitespace-nowrap">
-          {category.map((item, index) => (
+          {category?.map((item, index) => (
             <button
               key={index}
               className="text-sm cursor-pointer text-gray-600 hover:text-black"
@@ -74,10 +75,49 @@ function Home() {
         </div>
       </nav>
       <div>
-        {isPending && <h2 className="text-3xl justify-center flex mt-10">Loading...</h2>}
+        {isPending && (
+          <h2 className="text-3xl justify-center flex mt-10">Loading...</h2>
+        )}
       </div>
+      <ResponsiveMasonry
+        className="mx-auto container w-6xl"
+        columnsCountBreakPoints={{ 350: 1, 750: 2, 900: 3 }}
+      >
+        <Masonry gutter="30px">
+          {Array.isArray(data) &&
+            data.length > 0 &&
+            data.map((item, index) => (
+              <div key={index} className="group cursor-pointer relative">
+                <img className="w-full" src={item.urls.full} />
+                <div className="group-hover:block text-white top-0 w-full h-full p-4 hidden absolute bg-black/15">
+                  <div>
+                    <i class="fa-solid fa-heart text-xl absolute right-18 w-8 h-7 pt-[5px] pl-[5px] rounded-[4px] bg-white/70 text-black/80"></i>
+                    <i class="fa-solid fa-plus text-xl absolute right-7 w-8 h-7 pt-[5px] pl-[6px] rounded-[4px] bg-white/70 text-black/80"></i>
+                  </div>
+                  <div>
+                    <div className="bottom-4 gap-3 items-center absolute flex">
+                      <img
+                        src={item.user.profile_image.small}
+                        className="rounded-full"
+                        alt=""
+                      />
+                      <div>
+                        <p className="text-[#FDFDFD]">{item.user.name}</p>
+                        <p>{item.user.instagram_username}</p>
+                      </div>
+                    </div>
+                  </div>
+                  <a href={item.urls.full} download>
+                    <i class="fa-solid fa-download bottom-6 text-xl absolute right-7 w-8 h-7 pt-[5px] pl-[6px] rounded-[4px] bg-white/70 text-black/80"></i>
+                  </a>
+                </div>
+              </div>
+            ))}
+        </Masonry>
+      </ResponsiveMasonry>
     </div>
   );
 }
 
 export default Home;
+
