@@ -6,41 +6,41 @@ import Login from "./components/Login";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { add, remuv, setloading } from "./hooks/setUser";
+import { add, remuv } from "./hooks/setUser";
 
 function App() {
-  const { user, loading } = useSelector((state) => state.user);
+  const { user } = useSelector((state) => state.user);
   let dispatch = useDispatch();
   let navigate = useNavigate();
   let auth = getAuth();
-const [checking, setChecking] = useState(true);
-  // console.log(useUser);
 
-  useEffect(function () {
-    dispatch(setloading(true));
+  const [authReady, setAuthReady] = useState(false); // Auth tayyorligini tekshirish
 
-    onAuthStateChanged(auth, (user) => {
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         dispatch(add(user));
         console.log(user);
         navigate("/");
       } else {
-        toast.error("User Already sign Out");
+        dispatch(remuv());
+        toast.error("User Already Sign Out");
         navigate("/login");
       }
-      setChecking(false); 
-
+      setAuthReady(true); // Auth tekshiruvi tugadi
     });
 
+    return () => unsubscribe(); // Cleanup
   }, []);
-  if (checking) return null;
+
+  if (!authReady) return null; // Ma’lumot yuklanmaguncha hech narsa chiqmasin
+
   return (
     <div>
       <Routes>
-        <Route path="/" element={<Home></Home>} />
+        <Route path="/" element={<Home />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
-        {/* <Route path="/category/:categoryName" element={<CategoryPage />} /> */}
       </Routes>
     </div>
   );
