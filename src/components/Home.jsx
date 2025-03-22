@@ -3,10 +3,12 @@ import React, { useEffect, useState } from "react";
 import camera from "../img/search.svg";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import { useFetch } from "../hooks/useFetch";
+import { useSelector } from "react-redux";
 function Home() {
   let [search,setSearch] = useState("");
   let [category, setCategory] = useState([]);
   let [page, setPage] = useState(10);
+  const user = useSelector((state) => state.user.user);
   let token = `Xg5XCjz4AB1tGDnDJwYcfFBPnSSH6njcs7-AcSFu0sw`;
   // const token = import.meta.env.VITE_ACESS_KEY;
   let { data, isPending, error ,links} = useFetch(
@@ -30,6 +32,7 @@ function Home() {
         console.log(err);
       });
   }, []);
+console.log(user);
 
   return (
     <div>
@@ -61,12 +64,15 @@ function Home() {
             <button className="text-sm max-md:hidden font-medium border px-4 py-1 rounded-full whitespace-nowrap">
               Submit an image
             </button>
-            <i className="fa-solid fa-bell hidden md:inline text-[#CCCCCC] hover:text-[#111111] cursor-pointer"></i>
+            <i className="fa-solid ml-3 fa-bell hidden md:inline text-[#CCCCCC] hover:text-[#111111] cursor-pointer"></i>
           </div>
-          <i className="fa-solid fa-circle-user text-[#E6E6E6] text-2xl"></i>
-          <i className="fa-solid fa-bars text-[#767676] cursor-pointer hidden "></i>
+          <div className="avatar">
+            <div className="ring-primary ml-3 cursor-pointer ring-offset-base-100 w-8 rounded-full ring ring-offset-2">
+              <img src={user.photoURL} />
+            </div>
+          </div>
+          <i className="fa-solid fa-bars ml-3 text-[#767676] cursor-pointer hidden "></i>
         </div>
-
         <div className="flex gap-4 overflow-x-auto mt-3 pb-2 whitespace-nowrap">
           {category?.map((item, index) => (
             <button

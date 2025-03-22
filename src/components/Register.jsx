@@ -1,6 +1,13 @@
-import React from 'react'
+import React from "react";
+import google from "../img/googlwebp.webp";
+import {useRegister} from '../hooks/useRegister'
+
 
 function Register() {
+
+    let {registerWithGoogle}=useRegister()
+
+
   return (
     <div
       className="flex justify-center items-center h-screen bg-cover bg-center"
@@ -11,7 +18,7 @@ function Register() {
     >
       <form className="w-[450px] p-5 bg-white/10 backdrop-blur-sm border border-white/10 shadow-xl rounded-lg">
         <h3 className="text-center text-white text-3xl font-bold mb-5">
-          Login Here
+          Register
         </h3>
 
         <label htmlFor="username" className="text-white text-lg font-semibold">
@@ -52,9 +59,17 @@ function Register() {
           className="w-full mt-2 mb-4 p-3 bg-black/20 border border-gray-700 rounded text-white focus:ring-2 focus:ring-gray-500 focus:bg-gray-800 transition"
         />
 
-        <button className="w-full mt-5 p-3 cursor-pointer bg-green-600 text-white text-lg font-bold rounded hover:bg-green-700 transition">
-          Log In
-        </button>
+        <div className="flex gap-5">
+          <button className="w-full mt-5 p-3 cursor-pointer bg-blue-600  text-white text-lg font-bold rounded hover:bg-blue-700 transition">
+            Register
+          </button>
+                  <button
+          onClick={(e)=>{e.preventDefault(),registerWithGoogle()}}
+                      className="w-full mt-5 p-3 flex justify-center gap-3 items-center cursor-pointer bg-green-600 text-white text-lg font-bold rounded hover:bg-green-700 transition">
+            <p>Google</p>
+            <img className="w-10" src={google} alt="" />
+          </button>
+        </div>
 
         <p className="text-center text-white mt-4">
           Login with a social media account
@@ -76,4 +91,4 @@ function Register() {
   );
 }
 
-export default Register
+export default Register;
