@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import Home from "./components/Home";
 import Register from "./components/Register";
@@ -6,34 +6,29 @@ import Login from "./components/Login";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { add, remuv } from "./hooks/setUser";
+import { add, remuv, setloading } from "./hooks/setUser";
 
 function App() {
-  const { user } = useSelector((state) => state.user);
+  const { user, loading } = useSelector((state) => state.user);
   let dispatch = useDispatch();
   let navigate = useNavigate();
   let auth = getAuth();
 
-  const [authReady, setAuthReady] = useState(false); // Auth tayyorligini tekshirish
-
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    dispatch(setloading(true));
+
+    onAuthStateChanged(auth, (user) => {
       if (user) {
         dispatch(add(user));
-        console.log(user);
         navigate("/");
       } else {
         dispatch(remuv());
         toast.error("User Already Sign Out");
         navigate("/login");
       }
-      setAuthReady(true); // Auth tekshiruvi tugadi
+      dispatch(setloading(false));
     });
-
-    return () => unsubscribe(); // Cleanup
   }, []);
-
-  if (!authReady) return null; // Ma’lumot yuklanmaguncha hech narsa chiqmasin
 
   return (
     <div>
