@@ -4,10 +4,12 @@ import camera from "../img/search.svg";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import { useFetch } from "../hooks/useFetch";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 function Home() {
   let [search,setSearch] = useState("");
   let [category, setCategory] = useState([]);
   let [page, setPage] = useState(10);
+  let navigate=useNavigate()
   const user = useSelector((state) => state.user.user);
   let token = `Xg5XCjz4AB1tGDnDJwYcfFBPnSSH6njcs7-AcSFu0sw`;
   // const token = import.meta.env.VITE_ACESS_KEY;
@@ -15,7 +17,11 @@ function Home() {
     `https://api.unsplash.com/search/photos?client_id=${token}&query=${search.length==0?'all':search}&page=${page}`
   );
   console.log(data);
-  
+  useEffect(function() {
+    if (user==null) {
+      navigate('/login')
+    }
+  },[user,navigate])
   useEffect(function () {
     axios
       .get("https://api.unsplash.com/topics?per_page=30", {
@@ -33,7 +39,9 @@ function Home() {
       });
   }, []);
 console.log(user);
-
+function login() {
+  navigate('/login')
+}
   return (
     <div>
       <nav className="mx-auto max-w-7xl bg-white py-3">
@@ -66,11 +74,35 @@ console.log(user);
             </button>
             <i className="fa-solid ml-3 fa-bell hidden md:inline text-[#CCCCCC] hover:text-[#111111] cursor-pointer"></i>
           </div>
-          <div className="avatar">
-            <div className="ring-primary ml-3 cursor-pointer ring-offset-base-100 w-8 rounded-full ring ring-offset-2">
-              <img src={user.photoURL} />
+          {user ? (
+            <div className="dropdown dropdown-end">
+              <div
+                tabIndex={0}
+                role="button"
+                className="btn btn-ghost btn-circle avatar"
+              >
+                <div className="w-8 rounded-full">
+                  <img alt="" src={user?.photoURL} />
+                </div>
+              </div>
+              <ul
+                tabIndex={0}
+                className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-60 p-2 shadow-md"
+              >
+                <li>
+                  <a className="text-xl">View profile</a>
+                </li>
+                <li>
+                  <a className="text-xl">Settings</a>
+                </li>
+                <li className="underline">
+                  <a className="text-xl">Logout</a>
+                </li>
+              </ul>
             </div>
-          </div>
+          ) : (
+            <p className="cursor-pointer" onClick={login}>Login</p>
+          )}
           <i className="fa-solid fa-bars ml-3 text-[#767676] cursor-pointer hidden "></i>
         </div>
         <div className="flex gap-4 overflow-x-auto mt-3 pb-2 whitespace-nowrap">

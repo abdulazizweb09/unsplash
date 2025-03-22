@@ -1,6 +1,14 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import { useNavigate } from 'react-router-dom';
+import { useRegister } from '../hooks/useRegister';
+import google from "../img/googlwebp.webp";
 
 function Login() {
+  let navigate=useNavigate()
+  function to() {
+    navigate('/register')
+  }
+  let { registerWithGoogle } = useRegister();
   return (
     <div
       className="flex justify-center items-center h-screen bg-cover bg-center"
@@ -13,7 +21,6 @@ function Login() {
         <h3 className="text-center text-white text-3xl font-bold mb-5">
           Login Here
         </h3>
-
         <label htmlFor="username" className="text-white text-lg font-semibold">
           Username
         </label>
@@ -34,12 +41,26 @@ function Login() {
           className="w-full mt-2 mb-4 p-3 bg-black/20 border border-gray-700 rounded text-white focus:ring-2 focus:ring-gray-500 focus:bg-gray-800 transition"
         />
 
-        <button className="w-full mt-5 p-3 bg-green-600 text-white text-lg font-bold rounded hover:bg-green-700 transition">
-          Log In
-        </button>
+        <div className="flex gap-5">
+          <button className="w-full mt-5 p-3 cursor-pointer bg-blue-600  text-white text-lg font-bold rounded hover:bg-blue-700 transition">
+            Login
+          </button>
+          <button
+            onClick={(e) => {
+              e.preventDefault(), registerWithGoogle();
+            }}
+            className="w-full mt-5 p-3 flex justify-center gap-3 items-center cursor-pointer bg-green-600 text-white text-lg font-bold rounded hover:bg-green-700 transition"
+          >
+            <p>Google</p>
+            <img className="w-10" src={google} alt="" />
+          </button>
+        </div>
 
-        <p className="text-center text-white mt-4">
-          Login with a social media account
+        <p className="text-center flex justify-center gap-2 text-white mt-4">
+          Don’t have an account?{" "}
+          <span className="cursor-pointer underline" onClick={to}>
+            create
+          </span>
         </p>
 
         <div className="flex justify-center gap-4 mt-4">
