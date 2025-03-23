@@ -3,25 +3,35 @@ import React, { useEffect, useState } from "react";
 import camera from "../img/search.svg";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import { useFetch } from "../hooks/useFetch";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { signOut } from "firebase/auth";
+import { auth } from "../firebase/firebaseConfig";
+import { toast } from "react-toastify";
+import { remuv } from "../hooks/setUser";
 function Home() {
-  let [search,setSearch] = useState("");
+  let [search, setSearch] = useState("");
   let [category, setCategory] = useState([]);
   let [page, setPage] = useState(10);
-  let navigate=useNavigate()
+  let navigate = useNavigate();
   const user = useSelector((state) => state.user.user);
+  let dispatch = useDispatch()
   let token = `Xg5XCjz4AB1tGDnDJwYcfFBPnSSH6njcs7-AcSFu0sw`;
   // const token = import.meta.env.VITE_ACESS_KEY;
-  let { data, isPending, error ,links} = useFetch(
-    `https://api.unsplash.com/search/photos?client_id=${token}&query=${search.length==0?'all':search}&page=${page}`
+  let { data, isPending, error, links } = useFetch(
+    `https://api.unsplash.com/search/photos?client_id=${token}&query=${
+      search.length == 0 ? "all" : search
+    }&page=${page}`
   );
   console.log(data);
-  useEffect(function() {
-    if (user==null) {
-      navigate('/login')
-    }
-  },[user,navigate])
+  useEffect(
+    function () {
+      if (user == null) {
+        navigate("/login");
+      }
+    },
+    [user, navigate]
+  );
   useEffect(function () {
     axios
       .get("https://api.unsplash.com/topics?per_page=30", {
@@ -38,10 +48,23 @@ function Home() {
         console.log(err);
       });
   }, []);
-console.log(user);
-function login() {
-  navigate('/login')
-}
+  console.log(user);
+  function login() {
+    navigate("/login");
+  }
+  function handleCategory(id) {
+    console.log(id);
+    setSearch(id.title);
+  }
+  async function sign() {
+    try {
+      await signOut(auth)
+      dispatch(remuv())
+      toast.success('See you soon')
+    } catch (eror) {
+      toast.error(eror)
+   }
+  }
   return (
     <div>
       <nav className="mx-auto max-w-7xl bg-white py-3">
@@ -96,12 +119,14 @@ function login() {
                   <a className="text-xl">Settings</a>
                 </li>
                 <li className="underline">
-                  <a className="text-xl">Logout</a>
+                  <button onClick={sign} className="text-xl">Logout</button>
                 </li>
               </ul>
             </div>
           ) : (
-            <p className="cursor-pointer" onClick={login}>Login</p>
+            <p className="cursor-pointer" onClick={login}>
+              Login
+            </p>
           )}
           <i className="fa-solid fa-bars ml-3 text-[#767676] cursor-pointer hidden "></i>
         </div>
@@ -109,6 +134,9 @@ function login() {
           {category?.map((item, index) => (
             <button
               key={index}
+              onClick={() => {
+                handleCategory(item);
+              }}
               className="text-sm cursor-pointer text-gray-600 hover:text-black"
             >
               {item.title}
@@ -163,4 +191,3 @@ function login() {
 }
 
 export default Home;
-
