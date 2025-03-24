@@ -13,7 +13,7 @@ export function useLogin() {
       .then((user) => {
         let users = user.user;
         dispatch(add(users));
-          toast.success(`Welcome ${users.displayName}`);
+        toast.success(`Welcome ${users.displayName}`);
         navigate("/");
       })
       .catch((error) => {

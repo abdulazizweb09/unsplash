@@ -8,6 +8,7 @@ function Login() {
   let [email, setEmail] = useState("");
   let [pasword, setPasword] = useState(0);
   let { loginWithEmail } = useLogin();
+  let { registerWithGoogle } = useRegister();
   let navigate = useNavigate();
   function to() {
     navigate("/register");
