@@ -14,7 +14,7 @@ function Home() {
   let [category, setCategory] = useState([]);
   let [page, setPage] = useState(10);
   let navigate = useNavigate();
-  const user = useSelector((state) => state.user);
+  const user = useSelector((state) => state.user.user);
   let dispatch = useDispatch()
   let token = `Xg5XCjz4AB1tGDnDJwYcfFBPnSSH6njcs7-AcSFu0sw`;
   // const token = import.meta.env.VITE_ACESS_KEY;
@@ -63,6 +63,7 @@ function Home() {
       toast.error(eror)
    }
   }
+  
   return (
     <div>
       <nav className="mx-auto max-w-7xl bg-white py-3">
