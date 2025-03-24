@@ -48,12 +48,10 @@ function Home() {
         console.log(err);
       });
   }, []);
-  console.log(user);
   function login() {
     navigate("/login");
   }
   function handleCategory(id) {
-    console.log(id);
     setSearch(id.title);
   }
   async function sign() {

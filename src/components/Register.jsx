@@ -12,17 +12,6 @@ function Register() {
 
 
   function valid() {
-    // let sum = 0;
-    // pasword.map((item) => {
-      
-    //   if (item == item.toUpperCase) {
-    //     sum++
-    //   }
-    // })
-    // if (sum == 0) {
-    //   toast.error("parol katta harf bilan boshlanishi kerak");
-    //   return false;
-    // }
     if (email.length < 3) {
       toast.error("email kamida 3ta belgi bo'lishi kerak");
       return false
@@ -49,10 +38,7 @@ function Register() {
   
   function submit(e) {
     e.preventDefault();
-    // if (valid()) {
-    //   toast.success("muvaffaqiyatli ro'yxatdan o'tdingiz");
-    // }
-    if (obj) {
+    if (obj&&valid()) {
       registerWithEmail(obj.name, obj.email, obj.pasword);
     }
   }

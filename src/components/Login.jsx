@@ -1,14 +1,27 @@
-import React, { useEffect } from 'react'
-import { useNavigate } from 'react-router-dom';
-import { useRegister } from '../hooks/useRegister';
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useRegister } from "../hooks/useRegister";
 import google from "../img/googlwebp.webp";
+import useLogin from "../hooks/useLogin";
 
 function Login() {
-  let navigate=useNavigate()
+  let [email, setEmail] = useState("");
+  let [pasword, setPasword] = useState(0);
+  let { loginWithEmail } = useLogin();
+  let navigate = useNavigate();
   function to() {
-    navigate('/register')
+    navigate("/register");
   }
-  let { registerWithGoogle } = useRegister();
+  let obj = {
+    email,
+    pasword
+  }
+  function submit(e) {
+    e.preventDefault();
+    if (obj) {
+      loginWithEmail(obj.email, obj.pasword);
+    }
+  }
   return (
     <div
       className="flex justify-center items-center h-screen bg-cover bg-center"
@@ -21,12 +34,14 @@ function Login() {
         <h3 className="text-center text-white text-3xl font-bold mb-5">
           Login Here
         </h3>
-        <label htmlFor="username" className="text-white text-lg font-semibold">
-          Username
+        <label htmlFor="email" className="text-white text-lg font-semibold">
+          Email
         </label>
         <input
           type="text"
-          id="username"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          id="email"
           placeholder="Email or Phone"
           className="w-full mt-2 mb-4 p-3 bg-black/20 border border-gray-700 rounded text-white focus:ring-2 focus:ring-gray-500 focus:bg-gray-800 transition"
         />
@@ -37,12 +52,17 @@ function Login() {
         <input
           type="password"
           id="password"
+          value={pasword}
+          onChange={(e) => setPasword(e.target.value)}
           placeholder="Password"
           className="w-full mt-2 mb-4 p-3 bg-black/20 border border-gray-700 rounded text-white focus:ring-2 focus:ring-gray-500 focus:bg-gray-800 transition"
         />
 
         <div className="flex gap-5">
-          <button className="w-full mt-5 p-3 cursor-pointer bg-blue-600  text-white text-lg font-bold rounded hover:bg-blue-700 transition">
+          <button
+            onClick={submit}
+            className="w-full mt-5 p-3 cursor-pointer bg-blue-600  text-white text-lg font-bold rounded hover:bg-blue-700 transition"
+          >
             Login
           </button>
           <button
@@ -79,4 +99,4 @@ function Login() {
   );
 }
 
-export default Login
+export default Login;
