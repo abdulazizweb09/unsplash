@@ -14,7 +14,7 @@ function Home() {
   let [category, setCategory] = useState([]);
   let [page, setPage] = useState(10);
   let navigate = useNavigate();
-  const user = useSelector((state) => state.user.user);
+  const user = useSelector((state) => state.user);
   let dispatch = useDispatch()
   let token = `Xg5XCjz4AB1tGDnDJwYcfFBPnSSH6njcs7-AcSFu0sw`;
   // const token = import.meta.env.VITE_ACESS_KEY;
@@ -117,7 +117,9 @@ function Home() {
                   <a className="text-xl">Settings</a>
                 </li>
                 <li className="underline">
-                  <button onClick={sign} className="text-xl">Logout</button>
+                  <button onClick={sign} className="text-xl">
+                    Logout
+                  </button>
                 </li>
               </ul>
             </div>
@@ -147,43 +149,47 @@ function Home() {
           <h2 className="text-3xl justify-center flex mt-10">Loading...</h2>
         )}
       </div>
-      <ResponsiveMasonry
-        className="mx-auto container w-6xl"
-        columnsCountBreakPoints={{ 900: 3, 750: 2, 350: 1, 600: 1 }}
-      >
-        <Masonry gutter="30px">
-          {Array.isArray(data) &&
-            data.length > 0 &&
-            data.map((item, index) => (
-              <div key={index} className="group cursor-pointer relative">
-                <img className="w-full" src={item.urls.full} />
-                <div className="group-hover:block text-white top-0 w-full h-full p-4 hidden absolute bg-black/15">
-                  <div>
-                    <i className="fa-solid fa-heart text-xl absolute right-18 w-8 h-7 pt-[5px] pl-[5px] rounded-[4px] bg-white/70 text-black/80"></i>
-                    <i className="fa-solid fa-plus text-xl absolute right-7 w-8 h-7 pt-[5px] pl-[6px] rounded-[4px] bg-white/70 text-black/80"></i>
-                  </div>
-                  <div>
-                    <div className="bottom-4 gap-3 items-center absolute flex">
-                      <img
-                        src={item.user.profile_image.small}
-                        className="rounded-full"
-                        alt=""
-                      />
-                      <div>
-                        <p className="text-[#FDFDFD]">{item.user.name}</p>
-                        <p>{item.user.instagram_username}</p>
+      <div className="max-w-7xl container mx-auto">
+        <ResponsiveMasonry
+          columnsCountBreakPoints={{ 900: 3, 750: 2, 350: 1, 600: 1 }}
+        >
+          <Masonry gutter="30px">
+            {Array.isArray(data) &&
+              data.length > 0 &&
+              data.map((item, index) => (
+                <div key={index} className="group cursor-pointer relative">
+                  <img
+                    className="w-full max-sm:w-full max-sm:p-4"
+                    src={item.urls.full}
+                  />
+                  <div className="group-hover:block text-white top-0 w-full h-full p-4 hidden absolute bg-black/15">
+                    <div>
+                      <i className="fa-solid fa-heart text-xl absolute right-18 w-8 h-7 pt-[5px] pl-[5px] rounded-[4px] bg-white/70 text-black/80"></i>
+                      <i className="fa-solid fa-plus text-xl absolute right-7 w-8 h-7 pt-[5px] pl-[6px] rounded-[4px] bg-white/70 text-black/80"></i>
+                    </div>
+                    <div>
+                      <div className="bottom-4 gap-3 items-center absolute flex">
+                        <img
+                          src={item.user.profile_image.small}
+                          className="rounded-full"
+                          alt=""
+                        />
+                        <div>
+                          <p className="text-[#FDFDFD]">{item.user.name}</p>
+                          <p>{item.user.instagram_username}</p>
+                        </div>
                       </div>
                     </div>
+                    <a href={links + "&force=true"} download>
+                      {console.log(links)}
+                      <i className="fa-solid fa-download bottom-6 text-xl absolute right-7 w-8 h-7 pt-[5px] pl-[6px] rounded-[4px] bg-white/70 text-black/80"></i>
+                    </a>
                   </div>
-                  <a href={links + "&force=true"} download>
-                    {console.log(links)}
-                    <i className="fa-solid fa-download bottom-6 text-xl absolute right-7 w-8 h-7 pt-[5px] pl-[6px] rounded-[4px] bg-white/70 text-black/80"></i>
-                  </a>
                 </div>
-              </div>
-            ))}
-        </Masonry>
-      </ResponsiveMasonry>
+              ))}
+          </Masonry>
+        </ResponsiveMasonry>
+      </div>
     </div>
   );
 }
