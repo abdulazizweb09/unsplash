@@ -7,6 +7,8 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { add, remuv, setloading } from "./hooks/setUser";
+import Like from "./components/Like";
+import NotFound from "./components/NotFound";
 
 function App() {
   const { user, loading } = useSelector((state) => state.user);
@@ -20,7 +22,7 @@ function App() {
     onAuthStateChanged(auth, (user) => {
       if (user) {
         dispatch(add(user));
-        navigate("/");
+        // navigate("/");
       } else {
         dispatch(remuv());
         toast.error("User Already Sign Out");
@@ -36,6 +38,8 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/like" element={<Like />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </div>
   );

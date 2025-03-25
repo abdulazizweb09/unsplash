@@ -25,14 +25,14 @@ function Home() {
     }&page=${page}`
   );
   console.log(data);
-  useEffect(
-    function () {
-      if (user == null) {
-        navigate("/login");
-      }
-    },
-    [user, navigate]
-  );
+  // useEffect(
+  //   function () {
+  //     if (user == null) {
+  //       navigate("/login");
+  //     }
+  //   },
+  //   [user, navigate]
+  // );
   useEffect(function () {
     axios
       .get("https://api.unsplash.com/topics?per_page=30", {
