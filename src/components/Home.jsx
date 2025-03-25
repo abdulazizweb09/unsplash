@@ -64,7 +64,9 @@ function Home() {
       toast.error(eror);
     }
   }
-
+  function like() {
+    navigate("/like");
+  }
   return (
     <div>
       <nav className="mx-auto max-w-7xl bg-white py-3">
@@ -115,7 +117,7 @@ function Home() {
                 <li>
                   <a className="text-xl">View profile</a>
                 </li>
-                <li>
+                <li onClick={like}>
                   <a className="text-xl">Liked Photos</a>
                 </li>
                 <li>
