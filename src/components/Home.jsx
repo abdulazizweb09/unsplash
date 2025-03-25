@@ -9,15 +9,16 @@ import { signOut } from "firebase/auth";
 import { auth } from "../firebase/firebaseConfig";
 import { toast } from "react-toastify";
 import { remuv } from "../hooks/setUser";
+import { addLike } from "../hooks/setLike";
 function Home() {
   let [search, setSearch] = useState("");
   let [category, setCategory] = useState([]);
   let [page, setPage] = useState(10);
   let navigate = useNavigate();
+  const likedImages = useSelector((state) => state.like);
   const user = useSelector((state) => state.user.user);
-  let dispatch = useDispatch()
+  let dispatch = useDispatch();
   let token = `Xg5XCjz4AB1tGDnDJwYcfFBPnSSH6njcs7-AcSFu0sw`;
-  // const token = import.meta.env.VITE_ACESS_KEY;
   let { data, isPending, error, links } = useFetch(
     `https://api.unsplash.com/search/photos?client_id=${token}&query=${
       search.length == 0 ? "all" : search
@@ -56,14 +57,14 @@ function Home() {
   }
   async function sign() {
     try {
-      await signOut(auth)
-      dispatch(remuv())
-      toast.success('See you soon')
+      await signOut(auth);
+      dispatch(remuv());
+      toast.success("See you soon");
     } catch (eror) {
-      toast.error(eror)
-   }
+      toast.error(eror);
+    }
   }
-  
+
   return (
     <div>
       <nav className="mx-auto max-w-7xl bg-white py-3">
@@ -115,6 +116,9 @@ function Home() {
                   <a className="text-xl">View profile</a>
                 </li>
                 <li>
+                  <a className="text-xl">Liked Photos</a>
+                </li>
+                <li>
                   <a className="text-xl">Settings</a>
                 </li>
                 <li className="underline">
@@ -157,37 +161,48 @@ function Home() {
           <Masonry gutter="30px">
             {Array.isArray(data) &&
               data.length > 0 &&
-              data.map((item, index) => (
-                <div key={index} className="group cursor-pointer relative">
-                  <img
-                    className="w-full max-sm:w-full max-sm:p-4"
-                    src={item.urls.full}
-                  />
-                  <div className="group-hover:block text-white top-0 w-full h-full p-4 hidden absolute bg-black/15">
-                    <div>
-                      <i className="fa-solid fa-heart text-xl absolute right-18 w-8 h-7 pt-[5px] pl-[5px] rounded-[4px] bg-white/70 text-black/80"></i>
-                      <i className="fa-solid fa-plus text-xl absolute right-7 w-8 h-7 pt-[5px] pl-[6px] rounded-[4px] bg-white/70 text-black/80"></i>
-                    </div>
-                    <div>
-                      <div className="bottom-4 gap-3 items-center absolute flex">
-                        <img
-                          src={item.user.profile_image.small}
-                          className="rounded-full"
-                          alt=""
-                        />
-                        <div>
-                          <p className="text-[#FDFDFD]">{item.user.name}</p>
-                          <p>{item.user.instagram_username}</p>
+              data.map((item, index) => {
+                const isLiked = likedImages.some(
+                  (likedItem) => likedItem.id === item.id
+                );
+
+                return (
+                  <div key={index} className="group cursor-pointer relative">
+                    <img
+                      className="w-full max-sm:w-full max-sm:p-4"
+                      src={item.urls.full}
+                    />
+                    <div className="group-hover:block text-white top-0 w-full h-full p-4 hidden absolute bg-black/15">
+                      <div>
+                        <i
+                          onClick={() => dispatch(addLike(item))}
+                          className={`fa-solid fa-heart text-xl absolute right-18 w-8 h-7 pt-[5px] pl-[5px] rounded-[4px] bg-white/70 ${
+                            isLiked ? "text-red-500" : "text-black/80"
+                          }`}
+                        ></i>
+                        <i className="fa-solid fa-plus text-xl absolute right-7 w-8 h-7 pt-[5px] pl-[6px] rounded-[4px] bg-white/70 text-black/80"></i>
+                      </div>
+                      <div>
+                        <div className="bottom-4 gap-3 items-center absolute flex">
+                          <img
+                            src={item.user.profile_image.small}
+                            className="rounded-full"
+                            alt=""
+                          />
+                          <div>
+                            <p className="text-[#FDFDFD]">{item.user.name}</p>
+                            <p>{item.user.instagram_username}</p>
+                          </div>
                         </div>
                       </div>
+                      <a href={links + "&force=true"} download>
+                        {console.log(links)}
+                        <i className="fa-solid fa-download bottom-6 text-xl absolute right-7 w-8 h-7 pt-[5px] pl-[6px] rounded-[4px] bg-white/70 text-black/80"></i>
+                      </a>
                     </div>
-                    <a href={links + "&force=true"} download>
-                      {console.log(links)}
-                      <i className="fa-solid fa-download bottom-6 text-xl absolute right-7 w-8 h-7 pt-[5px] pl-[6px] rounded-[4px] bg-white/70 text-black/80"></i>
-                    </a>
                   </div>
-                </div>
-              ))}
+                );
+              })}
           </Masonry>
         </ResponsiveMasonry>
       </div>
