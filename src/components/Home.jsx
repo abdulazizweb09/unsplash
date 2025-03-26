@@ -10,6 +10,7 @@ import { auth } from "../firebase/firebaseConfig";
 import { toast } from "react-toastify";
 import { remuv } from "../hooks/setUser";
 import { addLike } from "../hooks/setLike";
+
 function Home() {
   let [search, setSearch] = useState("");
   let [category, setCategory] = useState([]);
@@ -24,27 +25,7 @@ function Home() {
       search.length == 0 ? "all" : search
     }&page=${page}`
   );
-  useEffect(() => {
-    function handleScroll() {
-      if (
-        window.innerHeight + window.scrollY >=
-        document.body.offsetHeight - 100
-      ) {
-        setPage((prevPage) => prevPage + 1);
-      }
-    }
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-  // useEffect(
-  //   function () {
-  //     if (user == null) {
-  //       navigate("/login");
-  //     }
-  //   },
-  //   [user, navigate]
-  // );
+  
   useEffect(function () {
     axios
       .get("https://api.unsplash.com/topics?per_page=30", {
@@ -179,9 +160,10 @@ function Home() {
             {Array.isArray(data) &&
               data.length > 0 &&
               data.map((item, index) => {
-                const isLiked = likedImages.some(
+                let isLiked = likedImages.some(
                   (likedItem) => likedItem.id === item.id
                 );
+                
 
                 return (
                   <div key={index} className="group cursor-pointer relative">
