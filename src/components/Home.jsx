@@ -14,7 +14,7 @@ import { addLike } from "../hooks/setLike";
 function Home() {
   let [search, setSearch] = useState("");
   let [category, setCategory] = useState([]);
-  let [page, setPage] = useState(10);
+  let [page, setPage] = useState(1);
   let navigate = useNavigate();
   const likedImages = useSelector((state) => state.like);
   const user = useSelector((state) => state.user.user);
@@ -28,7 +28,7 @@ function Home() {
   
   useEffect(function () {
     axios
-      .get("https://api.unsplash.com/topics?per_page=30", {
+      .get("https://api.unsplash.com/topics?", {
         headers: {
           Authorization: `Client-ID ${token}`,
         },
