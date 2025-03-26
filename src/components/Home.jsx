@@ -26,22 +26,22 @@ function Home() {
     }&page=${page}`
   );
   
-  useEffect(function () {
-    axios
-      .get("https://api.unsplash.com/topics?", {
-        headers: {
-          Authorization: `Client-ID ${token}`,
-        },
-      })
-      .then((response) => {
-        if (response.status === 200) {
-          setCategory(response.data);
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
+  // useEffect(function () {
+  //   axios
+  //     .get("https://api.unsplash.com/topics?page=10", {
+  //       headers: {
+  //         Authorization: `Client-ID ${token}`,
+  //       },
+  //     })
+  //     .then((response) => {
+  //       if (response.status === 200) {
+  //         setCategory(response.data);
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
+  // }, []);
   function login() {
     navigate("/login");
   }
