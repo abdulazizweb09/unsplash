@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 import { add, remuv, setloading } from "./hooks/setUser";
 import Like from "./components/Like";
 import NotFound from "./components/NotFound";
+import User from "./components/User";
 
 function App() {
   const { user, loading } = useSelector((state) => state.user);
@@ -37,6 +38,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/user" element={<User />} />
         <Route path="/login" element={<Login />} />
         <Route path="/like" element={<Like />} />
         <Route path="*" element={<NotFound />} />

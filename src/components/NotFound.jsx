@@ -1,15 +1,18 @@
 import React, { useState } from "react";
 import bg from "../img/bg.avif";
+import { useNavigate } from "react-router-dom";
 
 let test = `url(${bg})`;
 
 function NotFound() {
   let [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-
+  let navigate=useNavigate()
   let handleMouseMove = (e) => {
     setMousePosition({ x: e.clientX, y: e.clientY });
   };
-
+  function hom() {
+    navigate("/");
+  }
   return (
     <div
       className="relative w-full h-screen bg-cover bg-center"
@@ -26,7 +29,7 @@ function NotFound() {
         <div>
           <h1 className="text-6xl font-bold">404</h1>
           <p className="text-xl mt-4">Kechirasiz, sahifa topilmadi.</p>
-          <p className="mt-6 inline-block px-6 py-2 text-lg bg-white text-black cursor-pointer rounded-lg">
+          <p onClick={hom} className="mt-6 inline-block px-6 py-2 text-lg bg-white text-black cursor-pointer rounded-lg">
             Bosh sahifaga qaytish
           </p>
         </div>

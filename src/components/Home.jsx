@@ -24,7 +24,19 @@ function Home() {
       search.length == 0 ? "all" : search
     }&page=${page}`
   );
-  console.log(data);
+  useEffect(() => {
+    function handleScroll() {
+      if (
+        window.innerHeight + window.scrollY >=
+        document.body.offsetHeight - 100
+      ) {
+        setPage((prevPage) => prevPage + 1);
+      }
+    }
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
   // useEffect(
   //   function () {
   //     if (user == null) {
@@ -66,6 +78,9 @@ function Home() {
   }
   function like() {
     navigate("/like");
+  }
+  function profil() {
+    navigate("/user");
   }
   return (
     <div>
@@ -115,7 +130,7 @@ function Home() {
                 className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-60 p-2 shadow-md"
               >
                 <li>
-                  <a className="text-xl">View profile</a>
+                  <a onClick={profil} className="text-xl">View profile</a>
                 </li>
                 <li onClick={like}>
                   <a className="text-xl">Liked Photos</a>
@@ -198,7 +213,6 @@ function Home() {
                         </div>
                       </div>
                       <a href={links + "&force=true"} download>
-                        {console.log(links)}
                         <i className="fa-solid fa-download bottom-6 text-xl absolute right-7 w-8 h-7 pt-[5px] pl-[6px] rounded-[4px] bg-white/70 text-black/80"></i>
                       </a>
                     </div>
