@@ -25,7 +25,7 @@ function Home() {
       search.length == 0 ? "all" : search
     }&page=${page}`
   );
-  
+
   // useEffect(function () {
   //   axios
   //     .get("https://api.unsplash.com/topics?page=10", {
@@ -111,7 +111,9 @@ function Home() {
                 className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-60 p-2 shadow-md"
               >
                 <li>
-                  <a onClick={profil} className="text-xl">View profile</a>
+                  <a onClick={profil} className="text-xl">
+                    View profile
+                  </a>
                 </li>
                 <li onClick={like}>
                   <a className="text-xl">Liked Photos</a>
@@ -131,7 +133,6 @@ function Home() {
               Login
             </p>
           )}
-          <i className="fa-solid fa-bars ml-3 text-[#767676] cursor-pointer hidden "></i>
         </div>
         <div className="flex gap-4 overflow-x-auto mt-3 pb-2 whitespace-nowrap">
           {category?.map((item, index) => (
@@ -163,7 +164,6 @@ function Home() {
                 let isLiked = likedImages.some(
                   (likedItem) => likedItem.id === item.id
                 );
-                
 
                 return (
                   <div key={index} className="group cursor-pointer relative">
@@ -175,11 +175,10 @@ function Home() {
                       <div>
                         <i
                           onClick={() => dispatch(addLike(item))}
-                          className={`fa-solid fa-heart text-xl absolute right-18 w-8 h-7 pt-[5px] pl-[5px] rounded-[4px] bg-white/70 ${
+                          className={`fa-solid fa-heart text-xl absolute right-6 w-8 h-7 pt-[5px] pl-[5px] rounded-[4px] bg-white/70 ${
                             isLiked ? "text-red-500" : "text-black/80"
                           }`}
                         ></i>
-                        <i className="fa-solid fa-plus text-xl absolute right-7 w-8 h-7 pt-[5px] pl-[6px] rounded-[4px] bg-white/70 text-black/80"></i>
                       </div>
                       <div>
                         <div className="bottom-4 gap-3 items-center absolute flex">
