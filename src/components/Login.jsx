@@ -16,8 +16,8 @@ function Login() {
   }
   let obj = {
     email,
-    pasword
-  }
+    pasword,
+  };
   function submit(e) {
     e.preventDefault();
     if (obj) {
@@ -26,7 +26,7 @@ function Login() {
   }
   return (
     <>
-      <Modal/>
+      <Modal />
       <div
         className="flex justify-center items-center h-screen bg-cover bg-center"
         style={{
@@ -91,7 +91,7 @@ function Login() {
             >
               Forget Password ?
             </button>
-          </div>
+            </div>
 
           <div className="flex justify-center gap-4 mt-4">
             <button className="w-10 h-10 flex items-center justify-center rounded-full bg-blue-600 text-white text-xl hover:shadow-lg transition">

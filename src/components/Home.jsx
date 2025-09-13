@@ -8,24 +8,66 @@ import { useNavigate } from "react-router-dom";
 import { signOut } from "firebase/auth";
 import { auth } from "../firebase/firebaseConfig";
 import { toast } from "react-toastify";
-import { remuv } from "../hooks/setUser";
+import { add, remuv } from "../hooks/setUser";
 import { addLike } from "../hooks/setLike";
+import Modal from "./Modal";
+import { addModal, remuvModal } from "../hooks/useModalka";
 
 function Home() {
   let [search, setSearch] = useState("");
   let [category, setCategory] = useState([]);
   let [page, setPage] = useState(1);
   let navigate = useNavigate();
+  let [test, setTest] = useState("");
   const likedImages = useSelector((state) => state.like);
   const user = useSelector((state) => state.user.user);
+  const modal = useSelector((state) => state.modal);
   let dispatch = useDispatch();
   let token = `Xg5XCjz4AB1tGDnDJwYcfFBPnSSH6njcs7-AcSFu0sw`;
-  let { data, isPending, error, links } = useFetch(
-    `https://api.unsplash.com/search/photos?client_id=${token}&query=${
-      search.length == 0 ? "all" : search
-    }&page=${page}`
-  );
+  // let { data, isPending, error, links } = useFetch(
+  //   `https://api.unsplash.com/search/photos?client_id=${token}&query=${
+  //     search.length == 0 ? "all" : search
+  //   }&per_page=50&page=${page}`
+  // );
+  let [data, setData] = useState([]);
+  let fetchImages = async () => {
+    // setLoading(true);
+    try {
+      let res = await fetch(
+        `https://api.unsplash.com/search/photos?client_id=${token}&query=${
+          search.length === 0 ? "all" : search
+        }&per_page=30&page=${page}`
+      );
+      let data = await res.json();
+      setData((prev) => [...prev, ...data.results]);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
+  useEffect(() => {
+    fetchImages();
+  }, [page, search]);
+
+  function searchs() {
+    if (search.length > 0) setPage(1);
+    else {
+      setPage(1);
+      setSearch(test);
+    }
+  }
+  useEffect(() => {
+    const handleScroll = () => {
+      if (
+        window.innerHeight + window.scrollY >=
+        document.body.scrollHeight - 500
+      ) {
+        setPage((prev) => prev + 1);
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
   // useEffect(function () {
   //   axios
   //     .get("https://api.unsplash.com/topics?page=10", {
@@ -63,8 +105,35 @@ function Home() {
   function profil() {
     navigate("/user");
   }
+  let downloadImage = async (url, filename = "image.jpg", item) => {
+    console.log(item);
+
+    let response = await fetch(url);
+    let blob = await response.blob();
+    let link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(link.href);
+  };
+ function openModal(e, item) {
+   let modal = document.getElementById("my_modal_1");
+   if (!modal) return;
+
+   dispatch(remuvModal());
+   dispatch(addModal(item));
+
+   if (modal.open) {
+     modal.close(); 
+   }
+   modal.showModal(); 
+ }
+
   return (
     <div>
+      {false && <Modal />}
       <nav className="mx-auto max-w-7xl bg-white py-3">
         <div className="flex items-center justify-between mx-auto gap-4">
           <div className="flex items-center space-x-4 flex-grow ">
@@ -78,12 +147,18 @@ function Home() {
               />
               <input
                 type="text"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
+                value={test}
+                onChange={(e) => setTest(e.target.value)}
                 placeholder="Search photos and illustrations"
                 className="w-full pl-12 pr-12 py-2 focus:outline focus:bg-white rounded-full"
               />
             </div>
+            <button
+              onClick={searchs}
+              className="mr-5 border p-1 rounded-xl cursor-pointer"
+            >
+              Search
+            </button>
           </div>
 
           <div className="flex items-center max-lg:hidden space-x-4 ">
@@ -148,11 +223,11 @@ function Home() {
           ))}
         </div>
       </nav>
-      <div>
+      {/* <div>
         {isPending && (
           <h2 className="text-3xl justify-center flex mt-10">Loading...</h2>
         )}
-      </div>
+      </div> */}
       <div className="max-w-7xl container mx-auto">
         <ResponsiveMasonry
           columnsCountBreakPoints={{ 900: 3, 750: 2, 350: 1, 600: 1 }}
@@ -166,7 +241,11 @@ function Home() {
                 );
 
                 return (
-                  <div key={index} className="group cursor-pointer relative">
+                  <div
+                    onClick={(e) => openModal(e, item)}
+                    key={index}
+                    className="group cursor-pointer relative"
+                  >
                     <img
                       className="w-full max-sm:w-full max-sm:p-4"
                       src={item.urls.full}
@@ -193,7 +272,16 @@ function Home() {
                           </div>
                         </div>
                       </div>
-                      <a href={links + "&force=true"} download>
+                      <a
+                        onClick={(e) =>
+                          downloadImage(
+                            item.urls.full,
+                            `rasm-${item.id}.jpg`,
+                            item,
+                            e.stopPropagation()
+                          )
+                        }
+                      >
                         <i className="fa-solid fa-download bottom-6 text-xl absolute right-7 w-8 h-7 pt-[5px] pl-[6px] rounded-[4px] bg-white/70 text-black/80"></i>
                       </a>
                     </div>
