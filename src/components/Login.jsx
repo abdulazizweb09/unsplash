@@ -26,7 +26,7 @@ function Login() {
   }
   return (
     <>
-      <Modal />
+      {/* <Modal /> */}
       <div
         className="flex justify-center items-center h-screen bg-cover bg-center"
         style={{
