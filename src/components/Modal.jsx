@@ -5,7 +5,7 @@ function Modal() {
   const card = useSelector((state) => state.modal);
   let cardData = card.modal;
 
-  // if (!cardData || !cardData.urls) return null;
+ 
   console.log(cardData);
   
   return (

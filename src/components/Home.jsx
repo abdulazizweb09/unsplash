@@ -1,4 +1,3 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
 import camera from "../img/search.svg";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
@@ -8,54 +7,35 @@ import { useNavigate } from "react-router-dom";
 import { signOut } from "firebase/auth";
 import { auth } from "../firebase/firebaseConfig";
 import { toast } from "react-toastify";
-import { add, remuv } from "../hooks/setUser";
+import { remuv } from "../hooks/setUser";
 import { addLike } from "../hooks/setLike";
 import Modal from "./Modal";
 import { addModal, remuvModal } from "../hooks/useModalka";
 
 function Home() {
   let [search, setSearch] = useState("");
-  let [category, setCategory] = useState([]);
+  let [test, setTest] = useState("");
   let [page, setPage] = useState(1);
   let navigate = useNavigate();
-  let [test, setTest] = useState("");
+  let dispatch = useDispatch();
+
   const likedImages = useSelector((state) => state.like);
   const user = useSelector((state) => state.user.user);
-  const modal = useSelector((state) => state.modal);
-  let dispatch = useDispatch();
-  let token = `Xg5XCjz4AB1tGDnDJwYcfFBPnSSH6njcs7-AcSFu0sw`;
-  // let { data, isPending, error, links } = useFetch(
-  //   `https://api.unsplash.com/search/photos?client_id=${token}&query=${
-  //     search.length == 0 ? "all" : search
-  //   }&per_page=50&page=${page}`
-  // );
-  let [data, setData] = useState([]);
-  let fetchImages = async () => {
-    // setLoading(true);
-    try {
-      let res = await fetch(
-        `https://api.unsplash.com/search/photos?client_id=${token}&query=${
-          search.length === 0 ? "all" : search
-        }&per_page=30&page=${page}`
-      );
-      let data = await res.json();
-      setData((prev) => [...prev, ...data.results]);
-    } catch (err) {
-      console.error(err);
-    }
-  };
 
-  useEffect(() => {
-    fetchImages();
-  }, [page, search]);
+  let token = `Xg5XCjz4AB1tGDnDJwYcfFBPnSSH6njcs7-AcSFu0sw`;
+
+  let { data, isPending, error } = useFetch(
+    `https://api.unsplash.com/search/photos?client_id=${token}&query=${search.length === 0 ? "all" : search
+    }&per_page=30&page=${page}`
+  );
 
   function searchs() {
-    if (search.length > 0) setPage(1);
-    else {
-      setPage(1);
+    if (test.trim().length > 0) {
       setSearch(test);
+      setPage(1);
     }
   }
+
   useEffect(() => {
     const handleScroll = () => {
       if (
@@ -68,28 +48,11 @@ function Home() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-  // useEffect(function () {
-  //   axios
-  //     .get("https://api.unsplash.com/topics?page=10", {
-  //       headers: {
-  //         Authorization: `Client-ID ${token}`,
-  //       },
-  //     })
-  //     .then((response) => {
-  //       if (response.status === 200) {
-  //         setCategory(response.data);
-  //       }
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //     });
-  // }, []);
+
   function login() {
     navigate("/login");
   }
-  function handleCategory(id) {
-    setSearch(id.title);
-  }
+
   async function sign() {
     try {
       await signOut(auth);
@@ -99,15 +62,28 @@ function Home() {
       toast.error(eror);
     }
   }
+
   function like() {
     navigate("/like");
   }
+
   function profil() {
     navigate("/user");
   }
+
+  function openModal(e, item) {
+    let modal = document.getElementById("my_modal_1");
+    if (!modal) return;
+    dispatch(remuvModal());
+    dispatch(addModal(item));
+
+    if (modal.open) {
+      modal.close();
+    }
+    modal.showModal();
+  }
   let downloadImage = async (url, filename = "image.jpg", item) => {
     console.log(item);
-
     let response = await fetch(url);
     let blob = await response.blob();
     let link = document.createElement("a");
@@ -118,22 +94,10 @@ function Home() {
     document.body.removeChild(link);
     URL.revokeObjectURL(link.href);
   };
- function openModal(e, item) {
-   let modal = document.getElementById("my_modal_1");
-   if (!modal) return;
-
-   dispatch(remuvModal());
-   dispatch(addModal(item));
-
-   if (modal.open) {
-     modal.close(); 
-   }
-   modal.showModal(); 
- }
 
   return (
     <div>
-      {false && <Modal />}
+      <Modal />
       <nav className="mx-auto max-w-7xl bg-white py-3">
         <div className="flex items-center justify-between mx-auto gap-4">
           <div className="flex items-center space-x-4 flex-grow ">
@@ -162,10 +126,10 @@ function Home() {
           </div>
 
           <div className="flex items-center max-lg:hidden space-x-4 ">
-            <button className="text-sm max-lg:hidden font-medium whitespace-nowrap">
+            <button className="text-sm font-medium whitespace-nowrap">
               Get Unsplash+
             </button>
-            <button className="text-sm max-md:hidden font-medium border px-4 py-1 rounded-full whitespace-nowrap">
+            <button className="text-sm font-medium border px-4 py-1 rounded-full whitespace-nowrap">
               Submit an image
             </button>
             <i className="fa-solid ml-3 fa-bell hidden md:inline text-[#CCCCCC] hover:text-[#111111] cursor-pointer"></i>
@@ -209,37 +173,27 @@ function Home() {
             </p>
           )}
         </div>
-        <div className="flex gap-4 overflow-x-auto mt-3 pb-2 whitespace-nowrap">
-          {category?.map((item, index) => (
-            <button
-              key={index}
-              onClick={() => {
-                handleCategory(item);
-              }}
-              className="text-sm cursor-pointer text-gray-600 hover:text-black"
-            >
-              {item.title}
-            </button>
-          ))}
-        </div>
       </nav>
-      {/* <div>
+
+      <div>
         {isPending && (
           <h2 className="text-3xl justify-center flex mt-10">Loading...</h2>
         )}
-      </div> */}
+        {error && (
+          <h2 className="text-red-500 justify-center flex mt-10">{error}</h2>
+        )}
+      </div>
+
       <div className="max-w-7xl container mx-auto">
         <ResponsiveMasonry
           columnsCountBreakPoints={{ 900: 3, 750: 2, 350: 1, 600: 1 }}
         >
           <Masonry gutter="30px">
             {Array.isArray(data) &&
-              data.length > 0 &&
               data.map((item, index) => {
                 let isLiked = likedImages.some(
                   (likedItem) => likedItem.id === item.id
                 );
-
                 return (
                   <div
                     onClick={(e) => openModal(e, item)}
@@ -248,7 +202,8 @@ function Home() {
                   >
                     <img
                       className="w-full max-sm:w-full max-sm:p-4"
-                      src={item.urls.full}
+                      src={item.urls.small} // 🔥 faqat small qilib qo'ydim
+                      alt={item.alt_description}
                     />
                     <div className="group-hover:block text-white top-0 w-full h-full p-4 hidden absolute bg-black/15">
                       <div>

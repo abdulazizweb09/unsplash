@@ -144,7 +144,6 @@ function User() {
             <span>Stats</span>
           </button>
         </div>
-
         <div className="max-w-7xl container mx-auto">
           <ResponsiveMasonry
             columnsCountBreakPoints={{ 900: 3, 750: 2, 350: 1, 600: 1 }}

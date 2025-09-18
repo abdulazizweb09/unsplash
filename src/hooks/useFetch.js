@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
 
-export function useFetch(url) {
-  let [data, setData] = useState(null);
+export function useFetch(url, append = false) {
+  let [data, setData] = useState([]);
   let [isPending, setIsPending] = useState(false);
   let [error, setError] = useState(null);
-  let [links, setLinks] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -14,19 +13,18 @@ export function useFetch(url) {
         if (!req.ok) {
           throw new Error(req.statusText);
         }
-        const data = await req.json();
-        setData(data.results);
+        const res = await req.json();
+
+        setData((prev) => (append ? [...prev, ...res.results] : res.results));
+
         setIsPending(false);
-        setLinks(data.results.links?.download);
       } catch (err) {
         setError(err.message);
-        console.log(err.message);
         setIsPending(false);
       }
     };
     fetchData();
   }, [url]);
 
-
-  return { data, isPending, error,links };
+  return { data, isPending, error };
 }
